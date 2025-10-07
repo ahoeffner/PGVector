@@ -1,4 +1,7 @@
+
+CREATE EXTENSION vector;
 CREATE EXTENSION plpython3u;
+
 
 CREATE TABLE documents (
     id BIGSERIAL PRIMARY KEY,
