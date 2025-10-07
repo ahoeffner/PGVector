@@ -1,0 +1,31 @@
+# This configuration assumes you have ALREADY successfully built the
+# 'pgvector-base' image using the command in the README.
+
+name: postgres-vector-db
+
+services:
+  db:
+    image: pgvector-base
+    
+    container_name: postgres-vector-db
+    
+    environment:
+      POSTGRES_DB: vectorDB
+      
+      POSTGRES_USER: vector
+      POSTGRES_PASSWORD: vector
+      
+      POSTGRES_INITDB_SQL: |
+        CREATE EXTENSION IF NOT EXISTS vector;
+        CREATE EXTENSION IF NOT EXISTS plpython3u;
+    
+    ports:
+      - "5433:5432"
+      
+    volumes:
+      - postgres_vector_data:/var/lib/postgresql/data
+
+# Define the named volume
+volumes:
+  postgres_vector_data:
+
