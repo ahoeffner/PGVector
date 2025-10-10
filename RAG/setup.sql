@@ -19,10 +19,36 @@ CREATE TABLE test(
 );
 
 
-DO $$
-BEGIN
-IF NOT EXISTS (SELECT 1 FROM pg_language WHERE lanname = 'plpython3u') THEN
-RAISE EXCEPTION 'PL/Python3U is not installed. Please run CREATE EXTENSION plpython3u;';
-END IF;
-END
-$$ LANGUAGE plpgsql;
+
+DROP FUNCTION public.setRagData();
+
+
+
+CREATE OR REPLACE FUNCTION setRagData()
+RETURNS trigger AS $$
+	row = TD['new'];
+	
+	operation = TD['event']
+	
+	if operation == 'INSERT':
+	    row['test'] = f"Value set by Python: INITIAL INSERT"
+	    
+	elif operation == 'UPDATE':
+	    # Example: set a different value for an update
+	    row['test'] = f"Value set by Python: UPDATED"
+	    
+	return 'MODIFY'
+$$ LANGUAGE plpython3u;
+
+
+CREATE OR REPLACE TRIGGER setRagData
+BEFORE INSERT OR UPDATE ON test
+FOR EACH ROW
+EXECUTE FUNCTION setRagData();
+
+
+insert into test(text) values ('This is a test');
+update test set text = 'This is another test'
+
+select * from test;
+
