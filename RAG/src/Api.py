@@ -1,4 +1,8 @@
+import os
+import requests
+from urllib.parse import urlparse, unquote
+
 class Api:
-	@staticmethod
-	def createEmbeddings(text: str) -> str:
-		return "This is a placeholder for embedding creation."
+	def loadAndChunk(url:str) -> list[str] :
+		URL = url = urlparse(url)
+		return [f"This is a placeholder for content from {url.geturl()}."]

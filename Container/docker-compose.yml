@@ -23,6 +23,7 @@ services:
       - "5433:5432"
       
     volumes:
+      - /Users/alhof/Databases/PGVector:/host
       - postgres_vector_data:/var/lib/postgresql/data
 
 # Define the named volume

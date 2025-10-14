@@ -2,6 +2,40 @@
 CREATE EXTENSION vector;
 CREATE EXTENSION plpython3u;
 
+DROP TABLE beers;
+
+
+CREATE TABLE beers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    style VARCHAR(255),
+    brewery VARCHAR(255),
+    beer_name_full VARCHAR(255),
+    description TEXT,
+    abv NUMERIC(4, 2),        -- Alkoholprocent
+    min_ibu INTEGER,          -- IBU er et heltal
+    max_ibu INTEGER,
+    astringency NUMERIC,
+    body NUMERIC,
+    alcohol NUMERIC,
+    bitter NUMERIC,
+    sweet NUMERIC,
+    sour NUMERIC,
+    salty NUMERIC,
+    fruits NUMERIC,
+    hoppy NUMERIC,
+    spices NUMERIC,
+    malty NUMERIC,
+    review_aroma NUMERIC,
+    review_appearance NUMERIC,
+    review_palate NUMERIC,
+    review_taste NUMERIC,
+    review_overall NUMERIC,
+    number_of_reviews INTEGER
+);
+
+# Run copy from prompt
+# \COPY beers (name, style, brewery, beer_name_full, description, abv, min_ibu, max_ibu, astringency, body, alcohol, bitter, sweet, sour, salty, fruits, hoppy, spices, malty, review_aroma, review_appearance, review_palate, review_taste, review_overall, number_of_reviews) FROM '/host/beer_profile_and_ratings.csv' WITH (FORMAT CSV, HEADER TRUE, DELIMITER ',');
 
 CREATE TABLE documents (
     id BIGSERIAL PRIMARY KEY,

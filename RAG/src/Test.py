@@ -7,11 +7,9 @@ client = TestClient(app)
 
 def test_health():
     r = client.get("/health")
+    assert r.status_code == 200
     print("Health check response:", r.json())
-    assert r.status_code == 200
 
 
-def test_createEmbeddings():
-    r = client.post("/createEmbeddings", json={"text": "hello"})
-    print("Create Embeddings response:", r.json())
-    assert r.status_code == 200
+if __name__ == "__main__":
+	 test_health()

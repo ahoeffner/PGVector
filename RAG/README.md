@@ -1,6 +1,4 @@
-# Reverse Text REST service
-
-This small example exposes the `reverse_text` function (in `src/test.py`) as a REST service using FastAPI.
+# Embedding Service
 
 How to run
 
@@ -25,5 +23,4 @@ uvicorn src.app:app --reload --host 127.0.0.1 --port 8000
 Endpoints
 
 - GET /health -> health check
-- POST /reverse with JSON {"text": "..."} -> returns reversed text
-- GET /reverse/{text} -> returns reversed text (from path)
+- POST /index -> A list of base64 encoded chunks and the corresponding embedding vector
