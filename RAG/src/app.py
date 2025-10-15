@@ -35,6 +35,8 @@ def health():
 @app.post("/index")
 async def index(data: Request) -> Response :
 	# Updated validation check
+	print(data)
+
 	if (not data.b64 and not data.url) :
 		raise HTTPException(
 				status_code=400,
@@ -49,7 +51,8 @@ async def index(data: Request) -> Response :
 	else :
 		# Decode the base64 text
 		try:
-			chunks[0] = base64.b64decode(data.b64).decode('utf-8')
+			chunks.append(base64.b64decode(data.b64).decode('utf-8'))
+			print(chunks)
 		except Exception:
 			raise HTTPException(
 				status_code=400,
