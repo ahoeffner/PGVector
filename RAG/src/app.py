@@ -34,8 +34,8 @@ def health():
 
 @app.post("/index")
 async def index(data: Request) -> Response :
-	# Updated validation check
-	print(data)
+	chunks:list[str] = []
+	response = Response(chunks=[])
 
 	if (not data.b64 and not data.url) :
 		raise HTTPException(
@@ -43,20 +43,27 @@ async def index(data: Request) -> Response :
 				detail="Either b64 (Base64 encoded text) or url must be provided."
 			)
 
-	chunks:list[str] = []
-
 	if (data.url) :
-		# Placeholder for URL processing logic
 		chunks = Api.loadAndChunk(data.url)
 	else :
-		# Decode the base64 text
 		try:
-			chunks.append(base64.b64decode(data.b64).decode('utf-8'))
-			print(chunks)
+			text = base64.b64decode(data.b64).decode('utf-8')
+			chunks = Api.chunk(text)
+
 		except Exception:
 			raise HTTPException(
 				status_code=400,
 				detail="Could not decode the Base64 text. Please ensure 'b64' is valid Base64 encoded UTF-8 content."
 			)
 
-	return Response(chunks=[])
+	MOCK_EMBEDDING = [0.1, 0.2, 0.3]
+
+	for text in chunks :
+		chunk = ChunkEmbedding(
+			text=text,
+			embedding=MOCK_EMBEDDING
+		)
+		response.chunks.append(chunk)
+
+	print(response)
+	return(response)
