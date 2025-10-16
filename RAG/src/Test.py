@@ -36,15 +36,14 @@ def index():
 	try:
 		r = requests.post(url, json=data)
 
-		# 1. Assert the status code is 200 (OK)
 		assert r.status_code == 200
 
-		# 2. Assert the JSON response content is correct
-		response = r.json()
+		json = r.json()
+		chunks = json.get("chunks", [])
 
 		print(f"Index check successful!")
 		print(f"Status Code: {r.status_code}")
-		print(f"Response: {response}")
+		print(f"Response: {chunks[0]['embedding']}")
 
 	except requests.exceptions.ConnectionError:
 		print(f"ERROR: Failed to connect to {url}")
