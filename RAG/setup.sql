@@ -2,6 +2,11 @@
 CREATE EXTENSION vector;
 CREATE EXTENSION plpython3u;
 
+
+
+
+
+
 DROP TABLE beers;
 
 
@@ -37,6 +42,11 @@ CREATE TABLE beers (
 # Run copy from prompt
 # \COPY beers (name, style, brewery, beer_name_full, description, abv, min_ibu, max_ibu, astringency, body, alcohol, bitter, sweet, sour, salty, fruits, hoppy, spices, malty, review_aroma, review_appearance, review_palate, review_taste, review_overall, number_of_reviews) FROM '/host/beer_profile_and_ratings.csv' WITH (FORMAT CSV, HEADER TRUE, DELIMITER ',');
 
+
+select * from beers;
+
+
+
 CREATE TABLE documents (
     id BIGSERIAL PRIMARY KEY,
     embedding VECTOR(1536),          -- The column to store the vector embeddings
@@ -51,6 +61,87 @@ CREATE TABLE test(
 	text text not null,
 	test text
 );
+
+
+
+CREATE OR REPLACE FUNCTION return_version()
+  RETURNS VARCHAR
+AS $$
+    import sys
+    return sys.version
+$$ LANGUAGE plpython3u;
+
+
+CREATE OR REPLACE FUNCTION return_path() RETURNS setof text AS $$
+    import sys
+    return sys.path
+$$ LANGUAGE plpython3u;
+
+
+
+SELECT version();
+SELECT return_version();
+SELECT * FROM return_path();
+
+
+# apk add curl
+# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+# /usr/bin/python3.12 get-pip.py --break-system-packages
+# /usr/bin/python3.12 -m pip install requests --break-system-packages
+
+
+
+drop FUNCTION test;
+
+CREATE OR REPLACE FUNCTION test(text TEXT  -- New parameter for the text to be indexed/embedded
+)
+RETURNS REAL[]
+LANGUAGE plpython3u
+AS $$
+	import json
+	import base64
+	import requests
+	
+	URL = 'http://127.0.0.1:8000/index'
+	
+	try:
+	    B64_DATA = base64.b64encode(text.encode('utf-8')).decode('utf-8')
+	except Exception as e:
+	    plpy.error("Error encoding input text to Base64: %s" % str(e))
+	    
+	data = {'b64': B64_DATA}
+
+	try:
+	    r = requests.post(URL, json=data)
+	
+	    if r.status_code != 200:
+	        plpy.error("API call failed. Status: %s, Body: %s" % (r.status_code, r.text))
+	
+	    response_json = r.json()    
+	    chunks = response_json.get('chunks', [])
+	
+	    if not chunks:
+	        plpy.error("API call succeeded but returned no chunks.")
+	    
+	    embedding = chunks[0].get('embedding')
+	
+	    if not embedding:
+	        plpy.error("Chunk data missing 'embedding' field in the first chunk.")
+	
+	    return embedding
+	
+	except requests.exceptions.ConnectionError:
+	    plpy.error("ConnectionError: Failed to connect to %s. Ensure the FastAPI service is running" % URL)
+	    
+	except Exception as e:
+	    plpy.error("An unexpected error occurred during API call: %s" % str(e))
+	
+	return None
+$$;
+
+
+SELECT test('This is the text I want to embed.');
+
 
 
 
