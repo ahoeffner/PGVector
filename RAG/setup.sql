@@ -4,6 +4,28 @@ CREATE EXTENSION plpython3u;
 
 
 
+CREATE OR REPLACE FUNCTION python_version()
+  RETURNS VARCHAR
+AS $$
+    import sys
+    return sys.version
+$$ LANGUAGE plpython3u;
+
+
+CREATE OR REPLACE FUNCTION python_path() RETURNS setof text AS $$
+    import sys
+    return sys.path
+$$ LANGUAGE plpython3u;
+
+
+
+SELECT version();
+SELECT python_version();
+SELECT * FROM python_path();
+
+
+DROP FUNCTION python_path();
+DROP FUNCTION python_version();
 
 
 
@@ -47,54 +69,10 @@ select * from beers;
 
 
 
-CREATE TABLE documents (
-    id BIGSERIAL PRIMARY KEY,
-    embedding VECTOR(1536),          -- The column to store the vector embeddings
-    content TEXT NOT NULL,           -- The actual text chunk/snippet of your document
-    source VARCHAR(255),             -- Path or URL of the original document
-    metadata JSONB                   -- Flexible storage for things like page number, title, author, etc.
-);
 
+DROP FUNCTION test;
 
-CREATE TABLE test(
-	id serial primary key,
-	text text not null,
-	test text
-);
-
-
-
-CREATE OR REPLACE FUNCTION return_version()
-  RETURNS VARCHAR
-AS $$
-    import sys
-    return sys.version
-$$ LANGUAGE plpython3u;
-
-
-CREATE OR REPLACE FUNCTION return_path() RETURNS setof text AS $$
-    import sys
-    return sys.path
-$$ LANGUAGE plpython3u;
-
-
-
-SELECT version();
-SELECT return_version();
-SELECT * FROM return_path();
-
-
-# apk add curl
-# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-# /usr/bin/python3.12 get-pip.py --break-system-packages
-# /usr/bin/python3.12 -m pip install requests --break-system-packages
-
-
-
-drop FUNCTION test;
-
-CREATE OR REPLACE FUNCTION test(text TEXT  -- New parameter for the text to be indexed/embedded
-)
+CREATE OR REPLACE FUNCTION test(text TEXT)
 RETURNS REAL[]
 LANGUAGE plpython3u
 AS $$
@@ -102,7 +80,7 @@ AS $$
 	import base64
 	import requests
 	
-	URL = 'http://127.0.0.1:8000/index'
+	URL = 'http://host.docker.internal:8000/index'
 	
 	try:
 	    B64_DATA = base64.b64encode(text.encode('utf-8')).decode('utf-8')
@@ -141,6 +119,27 @@ $$;
 
 
 SELECT test('This is the text I want to embed.');
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE documents (
+    id BIGSERIAL PRIMARY KEY,
+    embedding VECTOR(1536),          -- The column to store the vector embeddings
+    content TEXT NOT NULL,           -- The actual text chunk/snippet of your document
+    source VARCHAR(255),             -- Path or URL of the original document
+    metadata JSONB                   -- Flexible storage for things like page number, title, author, etc.
+);
+
+
+
 
 
 

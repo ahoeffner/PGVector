@@ -221,6 +221,16 @@ RUN ln -sT docker-ensure-initdb.sh /usr/local/bin/docker-enforce-initdb.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-ensure-initdb.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
+
+
+# Install pip and subsequently all python packages needed to do RAG inside postgress
+RUN apk update && \
+    apk add --no-cache curl && \
+    curl -sSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
+    /usr/bin/python3.12 /tmp/get-pip.py --break-system-packages && \
+    /usr/bin/python3.12 -m pip install requests --break-system-packages && \
+    rm /tmp/get-pip.py
+
 # We set the default STOPSIGNAL to SIGINT, which corresponds to what PostgreSQL
 # calls "Fast Shutdown mode" wherein new connections are disallowed and any
 # in-progress transactions are aborted, allowing PostgreSQL to stop cleanly and
