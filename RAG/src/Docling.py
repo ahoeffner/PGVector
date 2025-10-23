@@ -35,7 +35,7 @@ class Docling :
 
 			doc = self.converter.convert(source)
 			doc = doc.document.export_to_markdown()
-			
+
 			source = DocumentStream(name="stream.md", stream=io.BytesIO(doc.encode('utf-8')))
 
 		else :
