@@ -24,7 +24,7 @@ class Docling :
 		)
 
 
-	def chunk(self,source:str, url:bool = False) -> list[str] :
+	def chunk(self, source:str, url:bool = False) -> list[str] :
 		"""
 		Chunks the input text using Docling's HybridChunker.
 		"""

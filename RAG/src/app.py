@@ -37,6 +37,8 @@ async def index(data: Request) -> Response :
 	chunks:list[str] = []
 	response = Response(chunks=[])
 
+	print(data)
+
 	if (not data.b64 and not data.url) :
 		raise HTTPException(
 				status_code=400,
@@ -44,11 +46,11 @@ async def index(data: Request) -> Response :
 			)
 
 	if (data.url) :
-		chunks = Api.loadAndChunk(data.url)
+		chunks = Api.chunk(data.url,True)
 	else :
 		try:
 			text = base64.b64decode(data.b64).decode('utf-8')
-			chunks = Api.chunk(text)
+			chunks = Api.chunk(text,False)
 
 		except Exception:
 			raise HTTPException(
@@ -59,6 +61,8 @@ async def index(data: Request) -> Response :
 	MOCK_EMBEDDING = [0.1, 0.2, 0.3]
 
 	for text in chunks :
+		text = base64.b64encode(text.encode('utf-8'))
+
 		chunk = ChunkEmbedding(
 			text=text,
 			embedding=MOCK_EMBEDDING
