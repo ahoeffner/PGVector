@@ -43,7 +43,7 @@ def index():
 
 		print(f"Index check successful!")
 		print(f"Status Code: {r.status_code}")
-		print(f"Response: {chunks[0]['embedding']}")
+		print(f"Response: {chunks[0]['text']}")
 
 	except requests.exceptions.ConnectionError:
 		print(f"ERROR: Failed to connect to {url}")

@@ -58,16 +58,15 @@ async def index(data: Request) -> Response :
 				detail="Could not decode the Base64 text. Please ensure 'b64' is valid Base64 encoded UTF-8 content."
 			)
 
-	MOCK_EMBEDDING = [0.1, 0.2, 0.3]
 
 	for text in chunks :
+		embed = Api.embed(text)
 		text = base64.b64encode(text.encode('utf-8'))
 
 		chunk = ChunkEmbedding(
 			text=text,
-			embedding=MOCK_EMBEDDING
+			embedding=embed
 		)
 		response.chunks.append(chunk)
 
-	print(response)
 	return(response)

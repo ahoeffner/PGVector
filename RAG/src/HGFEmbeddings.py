@@ -11,8 +11,7 @@ class HGFEmbeddings:
 	Class for generating embeddings using the Hugging Face Transformers library.
 	"""
 
-	def __init__(self, config:dict[str,any] = ()) :
-		super().__init__(config)
+	def __init__(self) :
 		model = os.getenv("HGFMODEL")
 
 		self.model = AutoModel.from_pretrained(model)
