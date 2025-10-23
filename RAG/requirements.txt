@@ -1,5 +1,7 @@
 httpx
+torch
 fastapi
+docling
 requests
 pydantic
 uvicorn[standard]

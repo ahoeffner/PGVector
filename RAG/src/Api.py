@@ -1,15 +1,16 @@
-import os
-import requests
-from urllib.parse import urlparse, unquote
+import Docling
+from urllib.parse import urlparse
+
 
 class Api:
 	def load(url:str) -> str :
-		URL = url = urlparse(url)
+		url = urlparse(url)
 		return f"This is a placeholder for content from {url.geturl()}."
 
 
 	def chunk(text:str) -> list[str] :
-		return [f"This is a placeholder for chunked content from the text: {text}"]
+		docling = Docling()
+		return docling.chunk(text)
 
 
 	def loadAndChunk(url:str) -> list[str] :
