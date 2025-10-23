@@ -30,8 +30,12 @@ class Docling :
 		"""
 
 		if (url) :
+			if (source.startswith("file://")) :
+				source = source.replace("file://","")
+
 			doc = self.converter.convert(source)
 			doc = doc.document.export_to_markdown()
+			
 			source = DocumentStream(name="stream.md", stream=io.BytesIO(doc.encode('utf-8')))
 
 		else :
@@ -47,10 +51,6 @@ class Docling :
 
 if __name__ == "__main__" :
 	docling = Docling()
-	file = "/users/alhof/Downloads/document.pdf"
+	file = "file:///users/alhof/Downloads/document.pdf"
 	chunks = docling.chunk(file,True)
-	print(chunks)
-
-	str = "This is a test sentence to be chunked by Docling. " * 50
-	chunks = docling.chunk(str,False)
 	print(chunks)
