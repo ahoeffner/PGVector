@@ -16,8 +16,6 @@ def health():
 		assert response == {"status": "ok"}
 
 		print(f"Health check successful!")
-		print(f"Status Code: {r.status_code}")
-		print(f"Response: {response}")
 
 	except requests.exceptions.ConnectionError:
 		print(f"ERROR: Failed to connect to {url}")
@@ -42,7 +40,6 @@ def index():
 		chunks = json.get("chunks", [])
 
 		print(f"Index check successful!")
-		print(f"Status Code: {r.status_code}")
 		print(f"Response: {chunks[0]['text']}")
 
 	except requests.exceptions.ConnectionError:
@@ -55,4 +52,5 @@ def index():
 
 
 if __name__ == "__main__":
-	 index()
+	health()
+	index()
