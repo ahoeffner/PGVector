@@ -33,6 +33,8 @@ MANIFEST
 *.manifest
 *.spec
 
+RAG/pyvenv.cfg
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
