@@ -14,25 +14,26 @@ class Request(BaseModel):
 
 # Define the response schema of this service
 class ChunkEmbedding(BaseModel):
-    """Structure for a single text chunk and its simulated embedding."""
-    text: str
-    embedding: list[float]
+	"""Structure for a single text chunk and its simulated embedding."""
+	text: str
+	embedding: list[float]
 
 class Response(BaseModel):
-    """The final response containing all text chunks and embeddings."""
-    chunks: list[ChunkEmbedding]
+	"""The final response containing all text chunks and embeddings."""
+	doc:str
+	chunks: list[ChunkEmbedding]
 
 
 
-app = FastAPI(title="Embedding Service")
+service = FastAPI(title="Embedding Service")
 
 
-@app.get("/health")
+@service.get("/health")
 def health():
    return {"status": "ok"}
 
 
-@app.post("/index")
+@service.post("/index")
 async def index(data: Request) -> Response :
 	chunks:list[str] = []
 	response = Response(chunks=[])

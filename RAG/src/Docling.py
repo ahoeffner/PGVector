@@ -24,10 +24,12 @@ class Docling :
 		)
 
 
-	def chunk(self, source:str, url:bool = False) -> list[str] :
+	def chunk(self, source:str, url:bool = False) -> tuple[str,list[str]] :
 		"""
 		Chunks the input text using Docling's HybridChunker.
 		"""
+
+		doc = None
 
 		if (url) :
 			if (source.startswith("file://")) :
@@ -45,12 +47,17 @@ class Docling :
 		iter = self.chunker.chunk(doc.document)
 		chunks = [c.text for c in iter]
 
-		return(chunks)
+		return(doc,chunks)
 
 
 
 if __name__ == "__main__" :
 	docling = Docling()
 	file = "file:///users/alhof/Downloads/document.pdf"
-	chunks = docling.chunk(file,True)
+	doc, chunks = docling.chunk(file,True)
+
+	print("------------------------------------------")
+	print(doc)
+	print("------------------------------------------")
 	print(chunks)
+	print("------------------------------------------")
