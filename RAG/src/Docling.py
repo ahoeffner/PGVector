@@ -29,7 +29,7 @@ class Docling :
 		Chunks the input text using Docling's HybridChunker.
 		"""
 
-		doc = None
+		text = None
 
 		if (url) :
 			if (source.startswith("file://")) :
@@ -38,6 +38,7 @@ class Docling :
 			doc = self.converter.convert(source)
 			doc = doc.document.export_to_markdown()
 
+			text = doc
 			source = DocumentStream(name="stream.md", stream=io.BytesIO(doc.encode('utf-8')))
 
 		else :
@@ -47,14 +48,16 @@ class Docling :
 		iter = self.chunker.chunk(doc.document)
 		chunks = [c.text for c in iter]
 
-		return(doc,chunks)
+		return(text,chunks)
 
 
 
 if __name__ == "__main__" :
 	docling = Docling()
-	file = "file:///users/alhof/Downloads/document.pdf"
-	doc, chunks = docling.chunk(file,True)
+	#file = "file:///users/alhof/Downloads/document.pdf"
+	#doc, chunks = docling.chunk(file,True)
+
+	doc, chunks = docling.chunk("Dette er en test",False)
 
 	print("------------------------------------------")
 	print(doc)

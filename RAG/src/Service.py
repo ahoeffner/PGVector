@@ -20,7 +20,7 @@ class ChunkEmbedding(BaseModel):
 
 class Response(BaseModel):
 	"""The final response containing all text chunks and embeddings."""
-	doc:str
+	doc:Optional[str] = None
 	chunks: list[ChunkEmbedding]
 
 
@@ -35,10 +35,8 @@ def health():
 
 @service.post("/index")
 async def index(data: Request) -> Response :
+	text:str = None
 	chunks:list[str] = []
-	response = Response(chunks=[])
-
-	print(data)
 
 	if (not data.b64 and not data.url) :
 		raise HTTPException(
@@ -47,11 +45,11 @@ async def index(data: Request) -> Response :
 			)
 
 	if (data.url) :
-		chunks = Api.chunk(data.url,True)
+		text, chunks = Api.chunk(data.url,True)
 	else :
 		try:
 			text = base64.b64decode(data.b64).decode('utf-8')
-			chunks = Api.chunk(text,False)
+			text, chunks = Api.chunk(text,False)
 
 		except Exception:
 			raise HTTPException(
@@ -59,6 +57,10 @@ async def index(data: Request) -> Response :
 				detail="Could not decode the Base64 text. Please ensure 'b64' is valid Base64 encoded UTF-8 content."
 			)
 
+	if (text != None) :
+		text = base64.b64encode(text.encode('utf-8'))
+
+	response = Response(doc=text, chunks=[])
 
 	for text in chunks :
 		embed = Api.embed(text)

@@ -90,13 +90,13 @@ AS $$
 	data = {'b64': B64_DATA}
 
 	try:
-	    r = requests.post(URL, json=data)
+	    response = requests.post(URL, json=data)
 	
-	    if r.status_code != 200:
+	    if response.status_code != 200:
 	        plpy.error("API call failed. Status: %s, Body: %s" % (r.status_code, r.text))
 	
-	    response_json = r.json()    
-	    chunks = response_json.get('chunks', [])
+	    response = response.json()    
+	    chunks = response.get('chunks', [])
 	
 	    if not chunks:
 	        plpy.error("API call succeeded but returned no chunks.")
@@ -106,16 +106,15 @@ AS $$
 	    if not embedding:
 	        plpy.error("Chunk data missing 'embedding' field in the first chunk.")
 	
-	    return embedding
+	    return(embedding)
 	
 	except requests.exceptions.ConnectionError:
 	    plpy.error("ConnectionError: Failed to connect to %s. Ensure the FastAPI service is running" % URL)
 	    
 	except Exception as e:
 	    plpy.error("An unexpected error occurred during API call: %s" % str(e))
-	
-	return None
 $$;
+
 
 
 SELECT test('This is the text I want to embed.');
